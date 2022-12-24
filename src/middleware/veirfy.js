@@ -6,7 +6,7 @@ MIN_DIGIT,
 MIN_SPECIALCHARS
 } = require('../utils/rules')
 
-const arr = [];
+let arr = [];
 
 const validateLength = (req, res, next) => {
   const { password } = req.body;
@@ -33,7 +33,7 @@ const verifyLowerCase = (req, res, next) => {
   const { password } = req.body;
   const lowerCase = password.match(/[a-z]/g);
   if (lowerCase === null) return res.status(400).json({message: 'Lowercase is required'});
-  if(lowerCase.length < MIN_LOWERCASE) {
+  if(!lowerCase.length > MIN_LOWERCASE) {
     arr.push('minLowerCase');
     return next();
   };
@@ -62,11 +62,15 @@ const verifyChar = (req, res, next) => {
   return next();
 };
 
-const verifyPassword = (req,res, next) => {
-  if (arr.length > 0) return res.status(400).json({
-    verify:false,
-    noMatch: arr
-  });
+const verifyPassword = (_req, res, _next) => {
+  if (arr.length > 0) {
+    const obj = {
+      verify:false,
+      noMatch: arr
+    };
+    arr = [];
+    return res.status(400).json(obj);
+  }
   return res.status(200).json({
     verify: true,
     noMatch: arr
