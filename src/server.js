@@ -1,3 +1,4 @@
 const app = require('./app')
+const port = 8080;
 
-app.listen(8080, () => console.log('opa'))
+app.listen(port, () => console.log(`App is runnin in port ${port}`));
